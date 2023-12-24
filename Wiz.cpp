@@ -32,7 +32,7 @@ int Wiz::discoverLights(Wiz lights[], int maxNumLights){
             break; 
         }
 
-        lights[iLight].ip = udp.remoteIP();
+        lights[iLight] = Wiz(udp.remoteIP());
         lights[iLight].mac = response["result"]["mac"].as<String>();
 
         Serial.println("Discovered a light.");
@@ -98,7 +98,7 @@ WizResult Wiz::awaitResponse(WiFiUDP &udp, StaticJsonDocument<JSON_SIZE> &respon
     return WizResult::TIMEOUT;
 }
 
-void Wiz::setColor(int r, int g, int b, int c=0, int w=0){
+void Wiz::setColor(int r, int g, int b, int c, int w){
     config.r = r;
     config.g = g;
     config.b = b;
@@ -239,7 +239,7 @@ WizResult Wiz::pushConfig(){
     return WizResult::ERROR;
 }
 
-LampConfig Wiz::getConfig() {
+LightConfig Wiz::getConfig() {
     return config;
 }
 

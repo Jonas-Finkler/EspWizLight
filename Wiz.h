@@ -7,7 +7,7 @@
 
 // todo: consistent language: lamp/light
 
-enum LampMode {TEMPERATURE_MODE, RGBCW_MODE, SCENE_MODE, OTHER_MODE};
+enum LightMode {TEMPERATURE_MODE, RGBCW_MODE, SCENE_MODE, OTHER_MODE};
 
 enum WizResult {
     SUCCESS = 0, 
@@ -17,8 +17,8 @@ enum WizResult {
     LIGHT_ERROR // When the light sends back an error (might be wrong parameters (out of range))
 }; 
 
-struct LampConfig {
-    LampMode mode = OTHER_MODE;
+struct LightConfig {
+    LightMode mode = OTHER_MODE;
     bool state = false;
     int r = 0;
     int g = 0;
@@ -46,9 +46,11 @@ private:
     // Waits for a udp response from the light.
     static WizResult awaitResponse(WiFiUDP &udp, StaticJsonDocument<JSON_SIZE> &response);
 
-    LampConfig config;
+    LightConfig config;
 
 public:
+    Wiz() {};
+    Wiz(IPAddress _ip): ip{_ip} {};
     // todo: these should be read from the bulb
     static const int DIM_MIN=10;
     static const int DIM_MAX=100;
@@ -64,11 +66,11 @@ public:
     // Pulls the state of the light into the Wiz object
     // Returns 0 on success
     WizResult pullConfig();
-    // Send configuration to the light
+    // Send configuration to the light todo: add option to not wait for response
     WizResult pushConfig();
 
     // Set the color of the light (c and w are the cold and warm white leds)
-    void setColor(int r, int g, int b, int c, int w); // todo: use bytes here
+    void setColor(int r, int g, int b, int c=0, int w=0); // todo: use bytes here
     // Set the color temperature of the light
     void setTemperature(int temp);
     // Turn the light on or off
@@ -82,7 +84,7 @@ public:
     // returns the current color temperature of the light or 0 in case an rgb value or a different scene is currently used
     int getTemperature();
     // returns the state of the light (remember to call pullConfig before this)
-    LampConfig getConfig();
+    LightConfig getConfig();
 
     IPAddress getIP();
 
