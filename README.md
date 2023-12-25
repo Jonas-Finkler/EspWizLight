@@ -56,3 +56,7 @@ LightConfig lightConfig = light.getConfig();
 ## Dependencies
 - [ArduinoJson](https://arduinojson.org/)
 
+## Notes
+Please note, that I was only able to test this code with the RGB version of the Wiz lights. 
+Parameters, such as the minimum and maximum dimming values or light temperatures might be different for other models. 
+Please let me know if you have difficulties with other light bulb models. 

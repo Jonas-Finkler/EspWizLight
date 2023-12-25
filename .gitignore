@@ -32,4 +32,8 @@
 *.app
 
 # Platformio
-Platformio.ini
+platformio.ini
+.pio
+.vscode
+src
+

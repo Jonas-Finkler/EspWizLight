@@ -35,12 +35,24 @@ void setup() {
     lights[i].pullConfig();  // receive config from light
     LightConfig conf = lights[i].getConfig();
     Serial.printf("  State: %s\n", conf.state);
+    Serial.printf("  Dimming: %i\n", conf.dimming);
     switch (conf.mode) {
       case RGBCW_MODE:
-
+        Serial.println("  Mode: RGBCW");
+        Serial.printf("  r: %i, g: %i, b: %i, c: %i, w: %i\n", conf.r, conf.g,
+                      conf.b, conf.c, conf.w);
+        break;
+      case TEMPERATURE_MODE:
+        Serial.println("  Mode: TEMPERATURE");
+        Serial.printf("  Temperature: %i\n", conf.temperature);
+        break;
+      case SCENE_MODE:
+        Serial.println("  Mode: SCENE");
+        Serial.printf("  SceneId: %i\n", conf.sceneId);
         break;
 
       default:
+        Serial.println("  Mode: OTHER");
         break;
     }
   }
