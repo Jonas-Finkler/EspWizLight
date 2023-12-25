@@ -1,7 +1,7 @@
 # Wiz_Light_ESP_Library
-An ESP library to control Wiz smart lights via WiFi. 
 
-The Wiz lights can be controlled via a simple UDP protokoll. 
+This library allows to controll Wiz smart lights with ESPs via UDP commands. 
+
 
 ## Usage
 
