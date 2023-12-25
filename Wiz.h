@@ -5,6 +5,7 @@
 
 #include "Arduino.h"
 #include "WiFi.h"
+#include "WizScenes.h"
 
 enum LightMode {
   TEMPERATURE_MODE,  // White light of certain temperature
@@ -31,7 +32,7 @@ struct LightConfig {
   int w = 0;
   int temperature = 0;
   int dimming = 0;
-  int sceneId = 0;  // 0 means no scene, for other scenes see:
+  WizScene scene = NO_SCENE;  // 0 means no scene, for other scenes see:
   // https://github.com/sbidy/pywizlight/blob/master/pywizlight/scenes.py
 };
 
@@ -136,6 +137,18 @@ class Wiz {
    * @return Dimming of the light.
    */
   int getDimming();
+
+  /**
+   * Set a specific scene
+   * @param[in] scene The scene to be activated.
+  */
+  void setScene(WizScene scene);
+
+  /**
+   * Returns the scene of the light during the last pullConfig operation.
+   * @return Scene of the light.
+   */
+  WizScene getScene();
 
   /**
    * Returns the color temperature of the light during the last pullConfig

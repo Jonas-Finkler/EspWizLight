@@ -121,6 +121,13 @@ void Wiz::setDimming(int dimming) {
 
 int Wiz::getDimming() { return config.dimming; }
 
+void Wiz::setScene(WizScene scene) {
+  config.mode = SCENE_MODE;
+  config.scene = scene;
+}
+
+WizScene Wiz::getScene() { return config.scene; }
+
 int Wiz::getTemperature() {
   if (config.mode == TEMPERATURE_MODE) {
     return config.temperature;
@@ -138,7 +145,8 @@ WizResult Wiz::pullConfig() {
   WizResult sendResult = sendCommand(command, response);
   if (sendResult == WizResult::SUCCESS) {
     config.state = response["result"]["state"];
-    config.sceneId = response["result"]["sceneId"];
+    int sceneId = response["result"]["sceneId"];
+    config.scene = (WizScene)sceneId;
     // some scenes (the wakeup one) do not contain a dim value
     // so we just set it to -1 so we will not send back 0 and cause an error the
     // next time
@@ -147,7 +155,7 @@ WizResult Wiz::pullConfig() {
     } else {
       config.dimming = -1;
     }
-    if (config.sceneId == 0) {
+    if (config.scene == NO_SCENE) {
       if (response["result"].containsKey("temp")) {
         config.mode = TEMPERATURE_MODE;
         config.temperature = response["result"]["temp"];
@@ -195,7 +203,7 @@ WizResult Wiz::pushConfig() {
       break;
 
     case SCENE_MODE:
-      command["params"]["sceneId"] = config.sceneId;
+      command["params"]["sceneId"] = (int)config.scene;
       break;
   }
 

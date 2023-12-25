@@ -48,7 +48,7 @@ void setup() {
         break;
       case SCENE_MODE:
         Serial.println("  Mode: SCENE");
-        Serial.printf("  SceneId: %i\n", conf.sceneId);
+        Serial.printf("  SceneId: %i\n", (int)conf.scene);
         break;
 
       default:
