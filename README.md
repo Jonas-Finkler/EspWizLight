@@ -1,5 +1,5 @@
-# Wiz_Light_ESP_Library
-[![Arduino Lint status](https://github.com/Jonas-Finkler/Wiz_Light_ESP_Library/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/Jonas-Finkler/Wiz_Light_ESP_Library/actions/workflows/arduino-lint.yml)
+# EspWizLight
+[![Arduino Lint status](https://github.com/Jonas-Finkler/EspWizLight/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/Jonas-Finkler/EspWizLight/actions/workflows/arduino-lint.yml)
 
 This library allows to controll Wiz smart lights with ESPs via UDP commands. 
 
