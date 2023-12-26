@@ -1,6 +1,6 @@
-#include "Wiz.h"
+#include "EspWizLight.h"
 
-int Wiz::discoverLights(Wiz lights[], int maxNumLights) {
+int WizLight::discoverLights(WizLight lights[], int maxNumLights) {
   // todo: Maybe use multiple requests here to improve success chances.
   // const char* msg =
   // "{\"method\":\"registration\",\"params\":{\"phoneMac\":\"AAAAAAAAAAAA\",\"register\":false,\"phoneIp\":\"1.2.3.4\",\"id\":\"1\"}}";
@@ -19,7 +19,7 @@ int Wiz::discoverLights(Wiz lights[], int maxNumLights) {
   // The broadcast IP ends with 255
   broadcastIP[3] = 255;
 
-  udp.beginPacket(broadcastIP, Wiz::WIZ_PORT);
+  udp.beginPacket(broadcastIP, WizLight::WIZ_PORT);
   serializeJson(command, udp);
   udp.endPacket();
 
@@ -32,7 +32,7 @@ int Wiz::discoverLights(Wiz lights[], int maxNumLights) {
       break;
     }
 
-    lights[iLight] = Wiz(udp.remoteIP());
+    lights[iLight] = WizLight(udp.remoteIP());
     lights[iLight].mac = response["result"]["mac"].as<String>();
 
     Serial.println("Discovered a light.");
@@ -56,12 +56,12 @@ int Wiz::discoverLights(Wiz lights[], int maxNumLights) {
   return iLight;
 }
 
-WizResult Wiz::sendCommand(StaticJsonDocument<JSON_SIZE> command,
-                           StaticJsonDocument<JSON_SIZE> &response) {
+WizResult WizLight::sendCommand(StaticJsonDocument<JSON_SIZE> command,
+                                StaticJsonDocument<JSON_SIZE> &response) {
   WiFiUDP udp;
   // Already start listenting for response
   udp.begin(WIZ_PORT);
-  udp.beginPacket(this->ip, Wiz::WIZ_PORT);
+  udp.beginPacket(this->ip, WizLight::WIZ_PORT);
   serializeJson(command, udp);
   udp.endPacket();
   WizResult responseState = awaitResponse(udp, response);
@@ -69,10 +69,10 @@ WizResult Wiz::sendCommand(StaticJsonDocument<JSON_SIZE> command,
   return responseState;
 }
 
-WizResult Wiz::awaitResponse(WiFiUDP &udp,
-                             StaticJsonDocument<JSON_SIZE> &response) {
+WizResult WizLight::awaitResponse(WiFiUDP &udp,
+                                  StaticJsonDocument<JSON_SIZE> &response) {
   int start = millis();
-  while (start + Wiz::TIMEOUT > millis()) {
+  while (start + WizLight::TIMEOUT > millis()) {
     int packetSize = udp.parsePacket();
     if (packetSize) {
       char packetBuffer[packetSize + 1];
@@ -97,7 +97,7 @@ WizResult Wiz::awaitResponse(WiFiUDP &udp,
   return WizResult::TIMEOUT;
 }
 
-void Wiz::setColor(int r, int g, int b, int c, int w) {
+void WizLight::setColor(int r, int g, int b, int c, int w) {
   config.r = r;
   config.g = g;
   config.b = b;
@@ -106,29 +106,29 @@ void Wiz::setColor(int r, int g, int b, int c, int w) {
   config.mode = RGBCW_MODE;
 }
 
-void Wiz::setTemperature(int temperature) {
+void WizLight::setTemperature(int temperature) {
   config.mode = TEMPERATURE_MODE;
   config.temperature = temperature;
 }
 
-void Wiz::setState(bool state) { config.state = state; }
+void WizLight::setState(bool state) { config.state = state; }
 
-bool Wiz::getState() { return config.state; }
+bool WizLight::getState() { return config.state; }
 
-void Wiz::setDimming(int dimming) {
+void WizLight::setDimming(int dimming) {
   config.dimming = max(min(dimming, DIM_MAX), DIM_MIN);
 }
 
-int Wiz::getDimming() { return config.dimming; }
+int WizLight::getDimming() { return config.dimming; }
 
-void Wiz::setScene(WizScene scene) {
+void WizLight::setScene(WizScene scene) {
   config.mode = SCENE_MODE;
   config.scene = scene;
 }
 
-WizScene Wiz::getScene() { return config.scene; }
+WizScene WizLight::getScene() { return config.scene; }
 
-int Wiz::getTemperature() {
+int WizLight::getTemperature() {
   if (config.mode == TEMPERATURE_MODE) {
     return config.temperature;
   } else {
@@ -136,7 +136,7 @@ int Wiz::getTemperature() {
   }
 }
 
-WizResult Wiz::pullConfig() {
+WizResult WizLight::pullConfig() {
   StaticJsonDocument<JSON_SIZE> command;
   StaticJsonDocument<JSON_SIZE> response;
   command["method"] = "getPilot";
@@ -180,7 +180,7 @@ WizResult Wiz::pullConfig() {
   }
 }
 
-WizResult Wiz::pushConfig() {
+WizResult WizLight::pushConfig() {
   StaticJsonDocument<JSON_SIZE> command;
   StaticJsonDocument<JSON_SIZE> response;
 
@@ -226,6 +226,6 @@ WizResult Wiz::pushConfig() {
   return WizResult::ERROR;
 }
 
-LightConfig Wiz::getConfig() { return config; }
+LightConfig WizLight::getConfig() { return config; }
 
-IPAddress Wiz::getIP() { return ip; }
+IPAddress WizLight::getIP() { return ip; }

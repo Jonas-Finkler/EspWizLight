@@ -1,6 +1,6 @@
 
 #include <Arduino.h>
-#include <Wiz.h>
+#include <EspWizLight.h>
 
 // I assume that maximally 4 lights are in the network. Adjust this if you have
 // more.
@@ -8,7 +8,7 @@ const int MAX_NUM_LIGHTS = 4;
 const char* SSID = "SSID";
 const char* PASSWORD = "PASSWORD";
 
-Wiz lights[MAX_NUM_LIGHTS];
+WizLight lights[MAX_NUM_LIGHTS];
 int numLights;
 
 void setup() {
@@ -26,7 +26,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   // discover all lights on the network
-  numLights = Wiz::discoverLights(lights, MAX_NUM_LIGHTS);
+  numLights = WizLight::discoverLights(lights, MAX_NUM_LIGHTS);
   Serial.printf("Discovered %i lights.\n", numLights);
   for (int i = 0; i < numLights; i++) {
     Serial.printf("-- Light %i --\n", i);

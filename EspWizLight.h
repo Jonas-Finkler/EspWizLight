@@ -1,5 +1,5 @@
-#ifndef Wiz_h
-#define Wiz_h
+#ifndef WizLight_h
+#define WizLight_h
 #include <ArduinoJson.h>
 #include <WiFiUdp.h>
 
@@ -36,7 +36,7 @@ struct LightConfig {
   // https://github.com/sbidy/pywizlight/blob/master/pywizlight/scenes.py
 };
 
-class Wiz {
+class WizLight {
  private:
   static const int JSON_SIZE = 512;  // memory for json objects
   static const int WIZ_PORT = 38899;
@@ -66,8 +66,8 @@ class Wiz {
   LightConfig config;
 
  public:
-  Wiz(){};
-  Wiz(IPAddress _ip) : ip{_ip} {};
+  WizLight(){};
+  WizLight(IPAddress _ip) : ip{_ip} {};
 
   // todo: these should be read from the bulb
   static const int DIM_MIN = 10;
@@ -83,7 +83,7 @@ class Wiz {
    * @param[in] maxNumLights Maximum number of lights to be discovered.
    * @return the number of lights discovered.
    */
-  static int discoverLights(Wiz *lights, int maxNumLights);
+  static int discoverLights(WizLight *lights, int maxNumLights);
 
   /**
    * Requests the configuration from the light and waits for a response.
@@ -109,8 +109,8 @@ class Wiz {
 
   /**
    * Set the light to a white with a specific temperature.
-   * @param[in] temp Temperature of the white light (Wiz::TEMPERATURE_MIN -
-   *                 Wiz::TEMPERATURE_MAX).
+   * @param[in] temp Temperature of the white light (WizLight::TEMPERATURE_MIN -
+   *                 WizLight::TEMPERATURE_MAX).
    */
   void setTemperature(int temp);
 
@@ -128,7 +128,7 @@ class Wiz {
 
   /**
    * Set the dimming of the light.
-   * @param[in] dimming Dimming value (Wiz:DIM_MIN - Wiz::DIM_MAX).
+   * @param[in] dimming Dimming value (WizLight:DIM_MIN - WizLight::DIM_MAX).
    */
   void setDimming(int dimming);
 
@@ -141,7 +141,7 @@ class Wiz {
   /**
    * Set a specific scene
    * @param[in] scene The scene to be activated.
-  */
+   */
   void setScene(WizScene scene);
 
   /**
