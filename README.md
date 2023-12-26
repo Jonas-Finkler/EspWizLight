@@ -6,14 +6,18 @@ This library allows to controll Wiz smart lights with ESPs via UDP commands.
 
 ## Usage
 
-Start by creating an instance of your light.
+Include the library.
 ```C++
-Wiz light = Wiz(IpAddress(192, 168, 0, 30));
+#include <EspWizLight.h>
+```
+Then, start by creating an instance of your light.
+```C++
+WizLight light = WizLight(IpAddress(192, 168, 0, 30));
 ```
 You can also automatically discover lights on the local network. 
 ```C++
 const int maxNumLights = 3;
-Wiz lights[maxNumLights];
+WizLight lights[maxNumLights];
 int numLights = discoverLights(lights, maxNumLights);
 ```
 
@@ -41,7 +45,7 @@ light.setDimming(50); // dim the light to half the maximum brightness
 light.pushConfig(); // send the configuration to the light
 ```
 The range of the tempereture is limited. 
-You can find these values in `Wiz::TEMPERATURE_MIN` and `Wiz::TEMPERATURE_MAX`.
+You can find these values in `WizLight::TEMPERATURE_MIN` and `WizLight::TEMPERATURE_MAX`.
 
 You can also obtain the current configuration of the light. 
 ```C++
