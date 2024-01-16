@@ -1,11 +1,19 @@
 #ifndef WizLight_h
 #define WizLight_h
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <WiFiUdp.h>
 
-#include "Arduino.h"
-#include "WiFi.h"
 #include "WizScenes.h"
+
+#if defined(ESP8266)
+#include <ESP8266WiFi.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#else
+// go for WiFi.h as default
+#include <WiFi.h>
+#endif
 
 enum LightMode {
   TEMPERATURE_MODE,  // White light of certain temperature
