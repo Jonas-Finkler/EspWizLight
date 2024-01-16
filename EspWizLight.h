@@ -48,7 +48,8 @@ class WizLight {
  private:
   static const int JSON_SIZE = 512;  // memory for json objects
   static const int WIZ_PORT = 38899;
-  static const int TIMEOUT = 2000;
+  static const unsigned int TIMEOUT = 200;
+  // todo: make private?
   IPAddress ip;
   String mac;
   // const char* mac;
@@ -89,9 +90,12 @@ class WizLight {
    * Discovers light on the local network using a UDP broadcast.
    * @param[out] lights Array of size maxNumLights.
    * @param[in] maxNumLights Maximum number of lights to be discovered.
+   * @param[in] numTries How many broadcasts will be sent. Values >1 improve
+   * discovery rate. Default=5
    * @return the number of lights discovered.
    */
-  static int discoverLights(WizLight *lights, int maxNumLights);
+  static int discoverLights(WizLight *lights, int maxNumLights,
+                            int numTries = 5);
 
   /**
    * Requests the configuration from the light and waits for a response.
@@ -177,6 +181,12 @@ class WizLight {
    * @return the IP adress.
    */
   IPAddress getIP();
+
+  /**
+   * Returns the MAC adress of the light.
+   * @return the MAC adress.
+   */
+  String getMac();
 
   // todo: Implement methods for requesting these configurations
   // {"method":"getModelConfig","env":"pro","result":{"ps":2,"pwmFreq":1000,"pwmRes":11,"pwmRange":[0,100],"wcr":60,"nowc":1,"cctRange":[2200,2700,6500,6500],"renderFactor":[200,255,150,255,0,0,40,0,0,0],"noSmartConf":0,"drvIface":0}}

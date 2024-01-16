@@ -1,6 +1,7 @@
 #include "EspWizLight.h"
 
-int WizLight::discoverLights(WizLight lights[], int maxNumLights) {
+int WizLight::discoverLights(WizLight lights[], int maxNumLights,
+                             int numTries) {
   // todo: Maybe use multiple requests here to improve success chances.
   // const char* msg =
   // "{\"method\":\"registration\",\"params\":{\"phoneMac\":\"AAAAAAAAAAAA\",\"register\":false,\"phoneIp\":\"1.2.3.4\",\"id\":\"1\"}}";
@@ -18,42 +19,42 @@ int WizLight::discoverLights(WizLight lights[], int maxNumLights) {
   IPAddress broadcastIP = WiFi.localIP();
   // The broadcast IP ends with 255
   broadcastIP[3] = 255;
+  int numLights = 0;
 
-  udp.beginPacket(broadcastIP, WizLight::WIZ_PORT);
-  serializeJson(command, udp);
-  udp.endPacket();
+  for (int iTry = 0; iTry < numTries; iTry++) {
+    udp.beginPacket(broadcastIP, WizLight::WIZ_PORT);
+    serializeJson(command, udp);
+    udp.endPacket();
 
-  int iLight = 0;
-  while (true) {
-    StaticJsonDocument<JSON_SIZE> response;
-    int responseState = awaitResponse(udp, response);
-    if (responseState != WizResult::SUCCESS) {
-      Serial.println("no success");
-      break;
-    }
+    while (true) {
+      StaticJsonDocument<JSON_SIZE> response;
+      int responseState = awaitResponse(udp, response);
+      if (responseState != WizResult::SUCCESS) {
+        break;
+      }
 
-    lights[iLight] = WizLight(udp.remoteIP());
-    lights[iLight].mac = response["result"]["mac"].as<String>();
-
-    Serial.println("Discovered a light.");
-    Serial.print("  Message: ");
-    serializeJson(response, Serial);
-    Serial.println("");
-    Serial.print("  IP: ");
-    Serial.println(lights[iLight].ip);
-    Serial.print("  mac: ");
-    Serial.println(lights[iLight].mac);
-
-    iLight++;
-    if (iLight >= maxNumLights) {
-      break;  // exit loop
-              // otherwise, wait for more packets from other lamps
-              // todo: error handling
+      IPAddress lightIP = udp.remoteIP();
+      bool lightAlreadyFound = false;
+      for (int i = 0; i < numLights; i++) {
+        if (lights[i].getIP() == lightIP) {
+          lightAlreadyFound = true;
+          break;
+        }
+      }
+      if (!lightAlreadyFound) {
+        lights[numLights] = WizLight(lightIP);
+        lights[numLights].mac = response["result"]["mac"].as<String>();
+        numLights++;
+        if (numLights >= maxNumLights) {  // we are done here
+          udp.stop();
+          return numLights;
+        }
+      }
     }
   }
 
   udp.stop();
-  return iLight;
+  return numLights;
 }
 
 WizResult WizLight::sendCommand(StaticJsonDocument<JSON_SIZE> command,
@@ -93,7 +94,7 @@ WizResult WizLight::awaitResponse(WiFiUDP &udp,
       }
     }
   }
-  Serial.println("timeout");
+  // Serial.println("timeout");
   return WizResult::TIMEOUT;
 }
 
@@ -229,3 +230,4 @@ WizResult WizLight::pushConfig() {
 LightConfig WizLight::getConfig() { return config; }
 
 IPAddress WizLight::getIP() { return ip; }
+String WizLight::getMac() { return mac; }
