@@ -28,13 +28,16 @@ void setup() {
   // discover all lights on the network
   numLights = WizLight::discoverLights(lights, MAX_NUM_LIGHTS);
   Serial.printf("Discovered %i lights.\n", numLights);
+
   for (int i = 0; i < numLights; i++) {
     Serial.printf("-- Light %i --\n", i);
     Serial.print("  IP: ");
     Serial.println(lights[i].getIP());
+    Serial.print("  MAC: ");
+    Serial.println(lights[i].getMac());
     lights[i].pullConfig();  // receive config from light
     LightConfig conf = lights[i].getConfig();
-    Serial.printf("  State: %s\n", conf.state);
+    Serial.printf("  State: %i\n", conf.state);
     Serial.printf("  Dimming: %i\n", conf.dimming);
     switch (conf.mode) {
       case RGBCW_MODE:
@@ -59,7 +62,7 @@ void setup() {
 
   // set all lights to a user defined color for 30 seconds
   for (int i = 0; i < numLights; i++) {
-    lights[i].setColor(200, 50, 50, 150, 150);
+    lights[i].setColor(10, 250, 50, 50, 10);
     lights[i].setDimming(50);
     lights[i].setState(true);
     lights[i].pushConfig();
