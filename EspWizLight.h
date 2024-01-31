@@ -177,6 +177,11 @@ class WizLight {
   LightConfig getConfig();
 
   /**
+   * Sets the config.
+   */
+  void setConfig(LightConfig _config);
+
+  /**
    * Returns the IP address of the light.
    * @return the IP adress.
    */

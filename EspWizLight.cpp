@@ -229,5 +229,7 @@ WizResult WizLight::pushConfig() {
 
 LightConfig WizLight::getConfig() { return config; }
 
+void WizLight::setConfig(LightConfig _config) { config = _config; }
+
 IPAddress WizLight::getIP() { return ip; }
 String WizLight::getMac() { return mac; }
